@@ -22,7 +22,7 @@ const swaggerOptions = {
       description: "Bilgiyi zincirle,geleceği garantile.",
     },
   },
-  apis: ["doc/**/*.js"],
+  apis: ["api-docs/**/*.js"],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
