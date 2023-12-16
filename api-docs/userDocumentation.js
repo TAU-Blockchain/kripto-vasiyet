@@ -130,7 +130,10 @@
  *         content:
  *           application/json:
  *             schema:
- *               type: boolean
+ *               type: object
+ *               properties:
+ *                 isAlive:
+ *                   type: boolean
  *       '400':
  *         description: Invalid parameter.
  *         content:
@@ -140,6 +143,50 @@
  *               properties:
  *                 error:
  *                   type: string
+ *       '404':
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       '500':
+ *         description: An error occurred during the operation.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /getUserStatus/{userId}:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get the isAlive status for the specified user via an external API.
+ *     parameters:
+ *       - name: userId
+ *         in: path
+ *         description: User ID.
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Successful response.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 isAlive:
+ *                   type: boolean
  *       '500':
  *         description: An error occurred during the operation.
  *         content:
