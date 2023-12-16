@@ -132,11 +132,14 @@ router.get("/isAlive/:id", (req, res) => {
           console.error("Error updating isAlive: " + queryErr.message);
           return res.status(500).json({ error: "Internal Server Error" });
         }
-        if (results[0]) {
-          return res.status(200).json(true);
-        } else {
-          return res.status(200).json(false);
+
+        if (!results[0] || results[0].isAlive === undefined) {
+          console.error("Invalid result format");
+          return res.status(500).json({ error: "Internal Server Error" });
         }
+
+        const isAlive = results[0].isAlive === 1;
+        return res.status(200).json(isAlive);
       });
     });
   } catch (error) {
