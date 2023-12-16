@@ -14,7 +14,7 @@ function MainHeader() {
               <a href="">
                 <h3 className="text-ed-blue">Türkiye Noterler Birliği</h3>
               </a>
-              <h3>Veraset İlamı Sorgulama</h3>
+              <h3>Kripto Vasiyet Oluşturma</h3>
             </div>
           </div>
           <div className="flex flex-row gap-x-2">
