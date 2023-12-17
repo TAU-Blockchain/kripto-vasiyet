@@ -14,12 +14,11 @@ function MainAside() {
     if (!window.ethereum) {
       return false;
     }
-    console.log(55);
 
     return true;
   };
   return (
-    <div className="w-2/12 bg-ed-gray shadow inline-flex flex-col justify-start items-center">
+    <div className="w-2/12 bg-ed-gray shadow inline-flex flex-col justify-start items-center min-h-screen">
       {error && <ErrorModal error={error} onClose={handleCloseError} />}
       <div className="flex justify-center items-center py-10">
         {address ? (
@@ -48,7 +47,7 @@ function MainAside() {
               }
             }}
           >
-            Connect Wallet
+            Cüzdan Bağla
           </button>
         )}
       </div>

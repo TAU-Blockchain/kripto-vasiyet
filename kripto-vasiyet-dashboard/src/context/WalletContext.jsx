@@ -9,6 +9,7 @@ const WalletProvider = ({ children }) => {
   const [signer, setSigner] = useState(null);
   const [accounts, setAccounts] = useState(null);
   const [address, setAddress] = useState(null);
+  const [contractAddress, setContractAddress] = useState(null);
 
   const initializeWallet = async () => {
     if (!window.ethereum) {
@@ -19,6 +20,7 @@ const WalletProvider = ({ children }) => {
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(provider);
       const signer = provider.getSigner();
       const accounts = await provider.send("eth_requestAccounts", []);
       const address = await signer.getAddress();
@@ -31,7 +33,9 @@ const WalletProvider = ({ children }) => {
       console.error("Error initializing wallet:", error);
     }
   };
-
+  const saveContractAddress = async (address) => {
+    setContractAddress(address);
+  };
   //   useEffect(() => {
   //     initializeWallet();
   //   }, []);
@@ -44,6 +48,8 @@ const WalletProvider = ({ children }) => {
         accounts,
         address,
         initializeWallet,
+        saveContractAddress,
+        contractAddress,
       }}
     >
       {children}

@@ -5,7 +5,7 @@ function MainHeader() {
   return (
     <div className="flex flex-row justify-between items-center mt-5">
       <div className="w-full">
-        <div className="flex flex-row justify-between items-center bg-white px-10 rounded-md">
+        <div className="flex flex-row justify-between items-center bg-white px-10 rounded-md border py-2">
           <div className="flex flex-row justify-center items-center">
             <div className="flex justify-center items-center">
               <img src={mainheader1} alt="Logo" />

@@ -10,8 +10,8 @@ const ErrorModal = ({ onClose }) => {
         >
           &times;
         </button>
-        <h2 className="text-2xl font-bold mb-4">Error</h2>
-        <p>Metamask is not installed!</p>
+        <h2 className="text-2xl font-bold mb-4">HATA!</h2>
+        <p>Metamask Cüzdanı Bulunamadı!</p>
       </div>
     </div>
   );

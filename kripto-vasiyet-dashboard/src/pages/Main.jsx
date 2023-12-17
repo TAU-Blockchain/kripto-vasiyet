@@ -9,8 +9,10 @@ function Main() {
       <div className="w-10/12 ">
         <Navigation />
         <MainComponent />
-        <MainAside />
-        <MainSection />
+        <div className="flex flex-row justify-center items-center">
+          <MainAside />
+          <MainSection />
+        </div>
       </div>
     </div>
   );
