@@ -6,7 +6,8 @@ async function main() {
     const deployer = (await getNamedAccounts()).deployer
     const heir1 = (await getNamedAccounts()).heir1
     const testament = await ethers.getContract("Testament", deployer)
-    const tokenContract = networkConfig[chainId][tokenContract]
+    const tokenContract = await ethers.getContract("MyToken", deployer)
+    const tokenId = "0"
 
     const tx = await testament.removeHeirForERC721(tokenContract, tokenId)
     await tx.wait(1)
@@ -17,7 +18,10 @@ async function main() {
     console.log(
         `Heir 1: ${heir1Address} | Nft: ${heir1Nft} | Token Id: ${heir1TokenId}`
     )
-    const inheritance1Info = await testament.erc721Heirs(heir1, tokenContract)
+    const inheritance1Info = await testament.erc721Inheritances(
+        tokenContract,
+        tokenId
+    )
     console.log("Inheritance of heir 1: ", inheritance1Info.toString())
 }
 

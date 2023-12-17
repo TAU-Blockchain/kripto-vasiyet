@@ -7,8 +7,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
 
+    const erc20contract = await ethers.getContract("MyERC20")
+
     const identity = networkConfig[chainId].identity
-    const inheritableTokens = networkConfig[chainId].inheritableTokens
+    const inheritableTokens = [await erc20contract.getAddress()]
     const functionsRouter = networkConfig[chainId].functionsRouter
     const subscriptionId = networkConfig[chainId].subscriptionId
     const gasLimit = networkConfig[chainId].gasLimit
@@ -40,6 +42,19 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         await verify(testament.address, args)
     }
     console.log("Token contract was deployed!")
+
+    const myToken = await ethers.getContract("MyERC20", deployer)
+    const myNft = await ethers.getContract("MyToken", deployer)
+
+    let tx = await myToken.approve(
+        testament.address,
+        ethers.parseEther("10000")
+    )
+    await tx.wait(1)
+    tx = await myNft.setApprovalForAll(testament.address, true)
+    await tx.wait(1)
+
+    console.log("Approved!")
 }
 
 module.exports.tags = ["all", "testament"]

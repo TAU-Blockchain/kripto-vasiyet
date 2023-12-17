@@ -48,10 +48,19 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
     ERC721Heir[] public erc721Heirs;
 
     address public functionsRouter;
-    string public source = "";
+    string public source =
+        "const requestCounter = args[1];"
+        "let isAlive = '1';"
+        "if (requestCounter == '2') {"
+        "isAlive = '0';"
+        "}"
+        "return Functions.encodeString(isAlive);";
+
     uint64 public subscriptionId;
     uint32 public gasLimit;
     bytes32 public donID;
+
+    uint256 public requestCounter;
 
     bytes32 public lastRequestId;
     string public lastResponse;
@@ -71,6 +80,7 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
         subscriptionId = _subscriptionId;
         gasLimit = _gasLimit;
         donID = _donID;
+        latestTimestamp = block.timestamp;
     }
 
     function addHeirForERC20(
@@ -151,8 +161,9 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
     function requestData() public {
         FunctionsRequest.Request memory req;
         req.initializeRequestForInlineJavaScript(source);
-        string[] memory args = new string[](1);
+        string[] memory args = new string[](2);
         args[0] = Strings.toString(identity);
+        args[1] = Strings.toString(requestCounter);
         if (args.length > 0) req.setArgs(args);
         lastRequestId = _sendRequest(
             req.encodeCBOR(),
@@ -161,6 +172,10 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
             donID
         );
     }
+
+    // Chainlink Functions, http değil de https kabul ettiği için edevlet taklidi olan APImize
+    // istek atamadık. Buradaki args aarrayinin ikinci elemanını oluşturan ve her functions isteğinde
+    // aritmetik artan requestCounter ile herhangi bir t anında vefat eden kullanıcı modellenmeye çalışılmıştır.
 
     function fulfillRequest(
         bytes32 _requestId,
@@ -172,7 +187,7 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
         }
         lastResponse = string(_response);
         lastError = string(_err);
-        if (keccak256(_response) == keccak256(bytes("1"))) {
+        if (keccak256(_response) == keccak256(bytes("0"))) {
             for (uint256 i; i < inheritableTokens.length; i++) {
                 IERC20 _token = IERC20(inheritableTokens[i]);
                 uint256 _balance = _token.balanceOf(owner());
@@ -183,6 +198,12 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
                         ((_balance * erc20Heirs[j].share) / 100)
                     );
                 }
+            }
+            for (uint256 i; i < erc721Heirs.length; i++) {
+                IERC721 _nft = IERC721(erc721Heirs[i].nft);
+                address _heir = erc721Heirs[i].heir;
+                uint256 _id = erc721Heirs[i].tokenId;
+                _nft.transferFrom(owner(), _heir, _id);
             }
             isAlive = false;
         }
@@ -202,6 +223,8 @@ contract Testament is Ownable, AutomationCompatibleInterface, FunctionsClient {
     }
 
     function performUpkeep(bytes calldata /* performData */) external override {
+        requestCounter++;
+        latestTimestamp = block.timestamp;
         requestData();
     }
 
